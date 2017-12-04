@@ -10,6 +10,7 @@ train_dataset = sys.argv[1]
 test_dataset = sys.argv[2]
 output_file = sys.argv[3]
 
+print('Reading input data...')
 train_df = pandas.read_csv(train_dataset)
 test_df = pandas.read_csv(test_dataset)
 
@@ -19,17 +20,18 @@ y_train = train_df.target.values
 # definition of the parameters that will be tested 
 # to get the best combination
 param_grid = { \
-                'n_estimators': [100, 300, 500, 800], \
-                'learning_rate': [0.5, 0.1, 0.05, 0.01], \
-                'loss': ['linear', 'square', 'exponential'] \
+                'n_estimators': [100, 300, 500], \
+                'learning_rate': [0.05, 0.01], \
+                'loss': ['linear', 'exponential'] \
              }
 
-
+print('Calculating best model...')
 DTR = DecisionTreeRegressor()
 ABR = AdaBoostRegressor(base_estimator = DTR)
 grid_search_ABR = GridSearchCV(ABR, param_grid=param_grid)
 
 # run the grid search with training data to select the best parameters
+
 grid_search_ABR.fit(X_train,y_train)
 
 #### BEST PARAMETERS
@@ -48,6 +50,7 @@ regressor = AdaBoostRegressor(DecisionTreeRegressor(max_depth=10),
 ada_model = regressor.fit(X,y)
 
 
+print('Calculating predictions...')
 # predict the values of the test dataset
 predictions = ada_model.predict(test_df.drop('id',axis=1))
 
